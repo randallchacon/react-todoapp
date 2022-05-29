@@ -8,6 +8,10 @@ import { TodoSearch } from '../TodoSearch';
 import { CreateTodoButton } from '../CreateTodoButton';
 import { Modal} from '../Modal';
 
+import { TodosError} from '../TodosError';
+import { TodosLoading } from '../TodosLoading';
+import { EmptyTodos } from '../EmptyTodos';
+
 function AppUI(){
 const {error, 
     loading, 
@@ -23,9 +27,9 @@ const {error,
             <TodoCounter/>
             <TodoSearch/>      
             <TodoList>
-                {error && <p>Error</p>}
-                {loading && <p>Loading...</p>}
-                {(!loading && !searchedTodos.searchValue && <p>Add your first to-do</p>)}
+                {error && <TodosError error={error} />}
+                {loading && <TodosLoading/>}
+                {(!loading && !searchedTodos.length) && <EmptyTodos/>}
 
                 {searchedTodos.map(todo => (
                 <TodoItem 
@@ -36,16 +40,13 @@ const {error,
                     onDelete={() => deleteTodo(todo.text)}
                 />
                 ))}
-            </TodoList>
-            
+            </TodoList>            
                     {!!openModal &&(
                         <Modal>
                             <TodoForm/>
                         </Modal>
                     )
-
                     }
-
             <CreateTodoButton
                 setOpenModal={setOpenModal}
             /> 

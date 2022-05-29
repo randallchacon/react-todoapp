@@ -23,7 +23,7 @@ function useLocalStorage(itemName, initialValue){
         } catch (error) {
           setError(error);
         }
-      }, 1000);
+      }, 3000);
     });
     
       //it works as a bridge between completedTodo and deleteTodo functions and localStorage and our state
