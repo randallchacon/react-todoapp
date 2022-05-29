@@ -11,34 +11,58 @@ import { AppUI } from './AppUI';
 ]; */
 
 function useLocalStorage(itemName, initialValue){
-  
-  const localStorageItem = localStorage.getItem(itemName);
-  let parsedItem;
-  
-  if(!localStorageItem){ //verified if exists
-    localStorage.setItem(itemName, JSON.stringify(initialValue));
-    parsedItem = initialValue;
-  } else{
-    parsedItem = JSON.parse(localStorageItem);
-  }
-  
-  const [item, setItem] = React.useState(parsedItem);//from this hook I can call other react hooks
+  const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [item, setItem] = React.useState(initialValue);//from this hook I can call other react hooks
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      try {
+        const localStorageItem = localStorage.getItem(itemName);
+        let parsedItem;
+        
+        if(!localStorageItem){ //verified if exists
+          localStorage.setItem(itemName, JSON.stringify(initialValue));
+          parsedItem = initialValue;
+        } else{
+          parsedItem = JSON.parse(localStorageItem);
+        }      
+  
+        setItem(parsedItem);
+        setLoading(false);        
+      } catch (error) {
+        setError(error);
+      }
+    }, 1000);
+  });
+  
     //it works as a bridge between completedTodo and deleteTodo functions and localStorage and our state
     const saveItem = (newItem) => {
-      const stringifiedItem = JSON.stringify(newItem);
-      localStorage.setItem(itemName, stringifiedItem);
-      setItem(newItem);
+      try {
+        const stringifiedItem = JSON.stringify(newItem);
+        localStorage.setItem(itemName, stringifiedItem);
+        setItem(newItem);
+        
+      } catch (error) {
+        setError(error);
+      }
     };
 
-    return [
+    return {
       item, 
-      saveItem
-    ];
+      saveItem,
+      loading,
+      error,
+    };
 }
 
 function App() { //JSX sintax - Babel does the conversion between JS to HTML
-  const [todos, saveTodos] = useLocalStorage('TODOS_V1', []);
+  const {
+    item: todos, //rename elements by :
+    saveItem: saveTodos,
+    loading,
+    error,
+  } = useLocalStorage('TODOS_V1', []);
   
   const [searchValue, setSearchValue] = React.useState('');
 
@@ -76,8 +100,20 @@ function App() { //JSX sintax - Babel does the conversion between JS to HTML
     saveTodos(newTodos);
   };  
 
+/*
+  console.log('Before use effect');
+
+  React.useEffect(() => {    
+    console.log('use effect');
+  }, [totalTodos]);
+
+  console.log('After use effect');
+*/
+
   return (
     <AppUI
+    loading={loading}
+    error={error}
     totalTodos = {totalTodos}
     completedTodos = {completedTodos}
     searchValue = {searchValue} 
