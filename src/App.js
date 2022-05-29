@@ -33,6 +33,24 @@ function App() { //JSX sintax - Babel does the conversion between JS to HTML
     
   }
 
+  const completeTodo = (text) => {
+    const todoIndex = todos.findIndex(todo => todo.text === text); //get todo position    
+    const newTodos = [...todos]; //clone by injection
+    newTodos[todoIndex].completed = true;
+    /*todos[todoIndex] = {
+    text: todos[todoIndex].text,
+    completed: true
+    } */
+    setTodos(newTodos);
+  };
+
+  const deleteTodo = (text) => {
+    const todoIndex = todos.findIndex(todo => todo.text === text); //get todo position    
+    const newTodos = [...todos]; //clone by injection
+    newTodos.splice(todoIndex, 1);//remove only 1 item
+    setTodos(newTodos);
+  };  
+
   return (
     <React.Fragment>
        <TodoCounter
@@ -48,6 +66,8 @@ function App() { //JSX sintax - Babel does the conversion between JS to HTML
           key={todo.text} 
           text={todo.text}
           completed={todo.completed}
+          onComplete={() => completeTodo(todo.text)}
+          onDelete={() => deleteTodo(todo.text)}
           />
         ))}
       </TodoList>
