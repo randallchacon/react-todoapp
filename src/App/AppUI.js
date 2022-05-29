@@ -3,6 +3,7 @@ import { TodoContext } from "../TodoContext";
 import { TodoCounter } from '../TodoCounter';
 import { TodoItem } from '../TodoItem';
 import { TodoList } from '../TodoList';
+import { TodoForm } from '../TodoForm';
 import { TodoSearch } from '../TodoSearch';
 import { CreateTodoButton } from '../CreateTodoButton';
 import { Modal} from '../Modal';
@@ -39,7 +40,7 @@ const {error,
             
                     {!!openModal &&(
                         <Modal>
-                            <p>{searchedTodos[0]?.text}</p>
+                            <TodoForm/>
                         </Modal>
                     )
 

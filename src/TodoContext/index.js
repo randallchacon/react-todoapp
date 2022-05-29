@@ -30,6 +30,19 @@ function TodoProvider(props){
         })
         
       }
+
+      const addTodo = (text) => {        
+        const newTodos = [...todos]; //clone by injection
+        newTodos.push({
+          completed: false,
+          text,
+        })
+        /*todos[todoIndex] = {
+        text: todos[todoIndex].text,
+        completed: true
+        } */
+        saveTodos(newTodos);
+      };      
     
       const completeTodo = (text) => {
         const todoIndex = todos.findIndex(todo => todo.text === text); //get todo position    
@@ -67,6 +80,7 @@ function TodoProvider(props){
             searchValue,
             setSearchValue,
             searchedTodos,
+            addTodo,
             completeTodo,
             deleteTodo,
             openModal,
