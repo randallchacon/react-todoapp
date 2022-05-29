@@ -2,16 +2,25 @@ import React from 'react';
 import { AppUI } from './AppUI';
 //import './App.css';
 
-const defaultTodos = [
+/* const defaultTodos = [
   { text:'cut onion', completed: false},  
   { text:'cut banana', completed: true},  
   { text:'cut strawberry', completed: false},  
   { text:'prepared breakfast', completed: false},
   { text:'do exercise', completed: true}  
-];
+]; */
 
 function App() { //JSX sintax - Babel does the conversion between JS to HTML
-  const [todos, setTodos] = React.useState(defaultTodos);
+  const localStorageTodos = localStorage.getItem('TODOS_V1');
+  let parsedTodos = [];
+
+  if(!localStorageTodos){
+    localStorage.setItem('TODOS_V1', JSON.stringify([]));
+  } else{
+    parsedTodos = JSON.parse(localStorageTodos);
+  }
+
+  const [todos, setTodos] = React.useState(parsedTodos);
   const [searchValue, setSearchValue] = React.useState('');
 
   const completedTodos = todos.filter(todo => !!todo.completed).length; //!! equals true
@@ -30,6 +39,13 @@ function App() { //JSX sintax - Babel does the conversion between JS to HTML
     
   }
 
+  //it works as a bridge between completedTodo and deleteTodo functions and localStorage and our state
+  const saveTodos = (newTodos) => {
+    const stringifiedTodos = JSON.stringify(newTodos);
+    localStorage.setItem('TODOS_V1', stringifiedTodos);
+    setTodos(newTodos);
+  };
+
   const completeTodo = (text) => {
     const todoIndex = todos.findIndex(todo => todo.text === text); //get todo position    
     const newTodos = [...todos]; //clone by injection
@@ -38,14 +54,14 @@ function App() { //JSX sintax - Babel does the conversion between JS to HTML
     text: todos[todoIndex].text,
     completed: true
     } */
-    setTodos(newTodos);
+    saveTodos(newTodos);
   };
 
   const deleteTodo = (text) => {
     const todoIndex = todos.findIndex(todo => todo.text === text); //get todo position    
     const newTodos = [...todos]; //clone by injection
     newTodos.splice(todoIndex, 1);//remove only 1 item
-    setTodos(newTodos);
+    saveTodos(newTodos);
   };  
 
   return (
