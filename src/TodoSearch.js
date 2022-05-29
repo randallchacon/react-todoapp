@@ -1,8 +1,8 @@
 import React from 'react';
 import './TodoSearch.css';
 
-function TodoSearch(){
-    const [searchValue, setSearchValue] = React.useState(''); //React Hooks
+function TodoSearch({searchValue, setSearchValue}){
+    //const [searchValue, setSearchValue] = React.useState(''); //React Hooks
 
     const onSearchValueChange = (event) => {
         console.log(event.target.value);
@@ -14,8 +14,7 @@ function TodoSearch(){
         placeholder="onion"
         value={searchValue}
         onChange={onSearchValueChange}
-        />,
-        <p>{searchValue}</p>
+        />
     ];
 }
 

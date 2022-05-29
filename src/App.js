@@ -5,19 +5,45 @@ import { TodoList } from './TodoList';
 import { TodoSearch } from './TodoSearch';
 import { CreateTodoButton } from './CreateTodoButton';
 //import './App.css';
-const todos = [
+const defaultTodos = [
   { text:'cut onion', completed: false},  
   { text:'cut banana', completed: true},  
-  { text:'cut strawberry', completed: false}  
+  { text:'cut strawberry', completed: false},  
+  { text:'prepared breakfast', completed: false},
+  { text:'do exercise', completed: true}  
 ];
 
 function App() { //JSX sintax - Babel does the conversion between JS to HTML
+  const [todos, setTodos] = React.useState(defaultTodos);
+  const [searchValue, setSearchValue] = React.useState('');
+
+  const completedTodos = todos.filter(todo => !!todo.completed).length; //!! equals true
+  const totalTodos = todos.length;
+
+  let searchedTodos = [];
+
+  if(!searchValue.length >= 1){
+    searchedTodos = todos;
+  } else{
+    searchedTodos = todos.filter(todo =>{
+      const todoText = todo.text.toLowerCase();
+      const searchText = searchValue.toLowerCase();
+      return todoText.includes(searchText);
+    })
+    
+  }
+
   return (
     <React.Fragment>
-       <TodoCounter/>
-      <TodoSearch/>      
+       <TodoCounter
+          total = {totalTodos}
+          completed = {completedTodos}
+       />
+      <TodoSearch
+      searchValue = {searchValue} setSearchValue = {setSearchValue}
+      />      
       <TodoList>
-        {todos.map(todo => (
+        {searchedTodos.map(todo => (
           <TodoItem 
           key={todo.text} 
           text={todo.text}
