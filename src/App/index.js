@@ -10,17 +10,36 @@ import { AppUI } from './AppUI';
   { text:'do exercise', completed: true}  
 ]; */
 
-function App() { //JSX sintax - Babel does the conversion between JS to HTML
-  const localStorageTodos = localStorage.getItem('TODOS_V1');
-  let parsedTodos = [];
-
-  if(!localStorageTodos){
-    localStorage.setItem('TODOS_V1', JSON.stringify([]));
+function useLocalStorage(itemName, initialValue){
+  
+  const localStorageItem = localStorage.getItem(itemName);
+  let parsedItem;
+  
+  if(!localStorageItem){ //verified if exists
+    localStorage.setItem(itemName, JSON.stringify(initialValue));
+    parsedItem = initialValue;
   } else{
-    parsedTodos = JSON.parse(localStorageTodos);
+    parsedItem = JSON.parse(localStorageItem);
   }
+  
+  const [item, setItem] = React.useState(parsedItem);//from this hook I can call other react hooks
 
-  const [todos, setTodos] = React.useState(parsedTodos);
+    //it works as a bridge between completedTodo and deleteTodo functions and localStorage and our state
+    const saveItem = (newItem) => {
+      const stringifiedItem = JSON.stringify(newItem);
+      localStorage.setItem(itemName, stringifiedItem);
+      setItem(newItem);
+    };
+
+    return [
+      item, 
+      saveItem
+    ];
+}
+
+function App() { //JSX sintax - Babel does the conversion between JS to HTML
+  const [todos, saveTodos] = useLocalStorage('TODOS_V1', []);
+  
   const [searchValue, setSearchValue] = React.useState('');
 
   const completedTodos = todos.filter(todo => !!todo.completed).length; //!! equals true
@@ -38,13 +57,6 @@ function App() { //JSX sintax - Babel does the conversion between JS to HTML
     })
     
   }
-
-  //it works as a bridge between completedTodo and deleteTodo functions and localStorage and our state
-  const saveTodos = (newTodos) => {
-    const stringifiedTodos = JSON.stringify(newTodos);
-    localStorage.setItem('TODOS_V1', stringifiedTodos);
-    setTodos(newTodos);
-  };
 
   const completeTodo = (text) => {
     const todoIndex = todos.findIndex(todo => todo.text === text); //get todo position    
