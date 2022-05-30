@@ -13,7 +13,7 @@ function TodoForm(){
         setNewTodoValue(event.target.value)
     }
     const onCancel = () =>{
-        //
+        setOpenModal(false);
     };
     const onSubmit = (event) =>{
         event.preventDefault();
